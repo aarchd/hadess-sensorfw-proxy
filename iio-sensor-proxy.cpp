@@ -55,23 +55,23 @@ typedef struct {
 
 	/* Orientation */
 	OrientationUp previous_orientation;
-	gboolean accel_avaliable;
+	gboolean accel_available;
 	std::shared_ptr<repowerd::OrientationSensor> orientation_sensor;
 
 	/* Light */
 	gdouble previous_level;
 	gboolean uses_lux;
-	gboolean light_avaliable;
+	gboolean light_available;
 	std::shared_ptr<repowerd::LightSensor> light_sensor;
 
 	/* Compass */
 	gdouble previous_heading;
-	gboolean compass_avaliable;
+	gboolean compass_available;
 	std::shared_ptr<repowerd::CompassSensor> compass_sensor;
 
 	/* Proximity */
 	gboolean previous_prox_near;
-	gboolean prox_avaliable;
+	gboolean prox_available;
 	std::shared_ptr<repowerd::ProximitySensor> proximity_sensor;
 } SensorData;
 
@@ -98,13 +98,13 @@ driver_type_exists (SensorData *data,
 {
 	switch (driver_type) {
 	case DRIVER_TYPE_ACCEL:
-		return (data->accel_avaliable == TRUE);
+		return (data->accel_available == TRUE);
 	case DRIVER_TYPE_LIGHT:
-		return (data->light_avaliable == TRUE);
+		return (data->light_available == TRUE);
 	case DRIVER_TYPE_COMPASS:
-		return (data->compass_avaliable == TRUE);
+		return (data->compass_available == TRUE);
 	case DRIVER_TYPE_PROXIMITY:
-		return (data->prox_avaliable == TRUE);
+		return (data->prox_available == TRUE);
 	default:
 		return FALSE;
 	}
@@ -154,25 +154,25 @@ enable_sensorfw_events (SensorData *data,
 {
 	switch (sensor_type) {
 	case DRIVER_TYPE_ACCEL:
-		if (data->accel_avaliable) {
+		if (data->accel_available) {
 			g_debug ("Enabling orientation sensor");
 			data->orientation_sensor->enable_orientation_events ();
 		}
 		break;
 	case DRIVER_TYPE_LIGHT:
-		if (data->light_avaliable) {
+		if (data->light_available) {
 			g_debug ("Enabling ambient light sensor");
 			data->light_sensor->enable_light_events ();
 		}
 		break;
 	case DRIVER_TYPE_COMPASS:
-		if (data->compass_avaliable) {
+		if (data->compass_available) {
 			g_debug ("Enabling compass sensor");
 			data->compass_sensor->enable_compass_events ();
 		}
 		break;
 	case DRIVER_TYPE_PROXIMITY:
-		if (data->prox_avaliable) {
+		if (data->prox_available) {
 			g_debug ("Enabling proximity sensor");
 			data->proximity_sensor->enable_proximity_events ();
 		}
@@ -186,25 +186,25 @@ disable_sensorfw_events (SensorData *data,
 {
 	switch (sensor_type) {
 	case DRIVER_TYPE_ACCEL:
-		if (data->accel_avaliable) {
+		if (data->accel_available) {
 			g_debug ("Disabling orientation sensor");
 			data->orientation_sensor->disable_orientation_events ();
 		}
 		break;
 	case DRIVER_TYPE_LIGHT:
-		if (data->light_avaliable) {
+		if (data->light_available) {
 			g_debug ("Disabling ambient light sensor");
 			data->light_sensor->disable_light_events ();
 		}
 		break;
 	case DRIVER_TYPE_COMPASS:
-		if (data->compass_avaliable) {
+		if (data->compass_available) {
 			g_debug ("Disabling compass sensor");
 			data->compass_sensor->disable_compass_events ();
 		}
 		break;
 	case DRIVER_TYPE_PROXIMITY:
-		if (data->prox_avaliable) {
+		if (data->prox_available) {
 			g_debug ("Disabling proximity sensor");
 			data->proximity_sensor->disable_proximity_events ();
 		}
@@ -606,16 +606,16 @@ name_lost_handler (GDBusConnection *connection,
 static void
 send_sensor_availability (SensorData *data)
 {
-	if (data->prox_avaliable)
+	if (data->prox_available)
 		send_dbus_event (data, PROP_HAS_PROXIMITY);
 
-	if (data->light_avaliable)
+	if (data->light_available)
 		send_dbus_event (data, PROP_HAS_AMBIENT_LIGHT);
 
-	if (data->accel_avaliable)
+	if (data->accel_available)
 		send_dbus_event (data, PROP_HAS_ACCELEROMETER);
 
-	if (data->compass_avaliable)
+	if (data->compass_available)
 		send_dbus_event (data, PROP_HAS_COMPASS);
 }
 
@@ -736,48 +736,48 @@ setup_sensors (SensorData *data)
 	{
 		data->proximity_sensor = std::make_shared<repowerd::SensorfwProximitySensor>(log,
 			the_dbus_bus_address());
-		data->prox_avaliable = TRUE;
+		data->prox_available = TRUE;
 	}
 	catch (std::exception const &e)
 	{
 		log->log(log_tag, "Failed to create SensorfwProximitySensor: %s", e.what());
-		data->prox_avaliable = FALSE;
+		data->prox_available = FALSE;
 	}
 
 	try
 	{
 		data->light_sensor = std::make_shared<repowerd::SensorfwLightSensor>(log,
 			the_dbus_bus_address());
-		data->light_avaliable = TRUE;
+		data->light_available = TRUE;
 	}
 	catch (std::exception const &e)
 	{
 		log->log(log_tag, "Failed to create SensorfwLightSensor: %s", e.what());
-		data->light_avaliable = FALSE;
+		data->light_available = FALSE;
 	}
 
 	try
 	{
 		data->orientation_sensor = std::make_shared<repowerd::SensorfwOrientationSensor>(log,
 			the_dbus_bus_address());
-		data->accel_avaliable = TRUE;
+		data->accel_available = TRUE;
 	}
 	catch (std::exception const &e)
 	{
 		log->log(log_tag, "Failed to create SensorfwOrientationSensor: %s", e.what());
-		data->accel_avaliable = FALSE;
+		data->accel_available = FALSE;
 	}
 
 	try
 	{
 		data->compass_sensor = std::make_shared<repowerd::SensorfwCompassSensor>(log,
 			the_dbus_bus_address());
-		data->compass_avaliable = TRUE;
+		data->compass_available = TRUE;
 	}
 	catch (std::exception const &e)
 	{
 		log->log(log_tag, "Failed to create SensorfwCompassSensor: %s", e.what());
-		data->compass_avaliable = FALSE;
+		data->compass_available = FALSE;
 	}
 }
 
@@ -798,14 +798,14 @@ int main (int argc, char **argv)
 	repowerd::HandlerRegistration light_registration;
 	repowerd::HandlerRegistration orientation_registration;
 	repowerd::HandlerRegistration compass_registration;
-	if (data->prox_avaliable == TRUE) {
+	if (data->prox_available == TRUE) {
 		prox_registration = data->proximity_sensor->register_proximity_handler(
 			[data](repowerd::ProximityState state) {
 				data->previous_prox_near = (state == repowerd::ProximityState::near);
 				send_dbus_event(data, PROP_PROXIMITY_NEAR);
 			});
 	}
-	if (data->light_avaliable == TRUE) {
+	if (data->light_available == TRUE) {
 		light_registration = data->light_sensor->register_light_handler(
 			[data](double light) {
 				if (data->previous_level != light) {
@@ -814,7 +814,7 @@ int main (int argc, char **argv)
 				}
 			});
 	}
-	if (data->prox_avaliable == TRUE) {
+	if (data->prox_available == TRUE) {
 		orientation_registration = data->orientation_sensor->register_orientation_handler(
 			[data](repowerd::OrientationData value) {
 				OrientationUp orientation = data->previous_orientation;
@@ -846,7 +846,7 @@ int main (int argc, char **argv)
 				}
 			});
 	}
-	if (data->compass_avaliable == TRUE) {
+	if (data->compass_available == TRUE) {
 		compass_registration = data->compass_sensor->register_compass_handler(
 			[data](int heading) {
 				if (data->previous_heading != heading) {
