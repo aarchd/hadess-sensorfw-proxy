@@ -42,6 +42,7 @@ private:
 
     ProximityHandler m_handler;
     repowerd::ProximityState m_state;
+    bool m_broken_proximity;
 };
 
 }

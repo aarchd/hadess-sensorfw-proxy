@@ -33,7 +33,8 @@ repowerd::SensorfwProximitySensor::SensorfwProximitySensor(
     std::string const& dbus_bus_address)
     : Sensorfw(log, dbus_bus_address, "Proximity", PluginType::PROXIMITY),
       m_handler{null_handler},
-      m_state{ProximityState::far}
+      m_state{ProximityState::far},
+      m_broken_proximity{g_strcmp0 (g_getenv ("BROKEN_PROXIMITY"), "1") == 0}
 {
 }
 
@@ -67,7 +68,7 @@ void repowerd::SensorfwProximitySensor::disable_proximity_events()
 void repowerd::SensorfwProximitySensor::data_recived_impl()
 {
     QVector<ProximityData> values;
-    if(m_socket->read<ProximityData>(values)) {
+    if(!m_broken_proximity && m_socket->read<ProximityData>(values)) {
         m_state = values[0].withinProximity_ ? ProximityState::near : ProximityState::far;
     } else {
         m_state = ProximityState::far;
