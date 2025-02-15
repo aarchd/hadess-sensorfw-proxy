@@ -61,6 +61,7 @@ repowerd::Sensorfw::~Sensorfw()
     stop();
     release_sensor();
     m_socket->dropConnection();
+    read_loop.join();
 }
 
 const char* repowerd::Sensorfw::plugin_string() const
@@ -123,6 +124,17 @@ bool repowerd::Sensorfw::load_plugin()
     g_variant_unref(result);
 
     return the_result;
+}
+
+void repowerd::Sensorfw::run_socket_reader()
+{
+    read_loop = std::thread([this](){
+        while (m_socket->isConnected()) {
+            if (m_socket->socket()->waitForReadyRead(-1)) {
+                data_recived_impl();
+            }
+        }
+    });
 }
 
 void repowerd::Sensorfw::request_sensor()
@@ -191,15 +203,9 @@ void repowerd::Sensorfw::start()
         return;
 
     m_running = true;
-    read_loop = std::thread([this](){
-        log->log(log_tag, "Eventloop started");
-        while (m_running) {
-            if (m_socket->socket()->waitForReadyRead(10))
-                data_recived_impl();
-        }
-        m_running = false;
-        log->log(log_tag, "Eventloop stopped");
-    });
+
+    if (!read_loop.joinable())
+        run_socket_reader();
 
     int constexpr timeout_default = 100;
     auto const result =  g_dbus_connection_call_sync(
@@ -250,9 +256,6 @@ void repowerd::Sensorfw::stop()
     } else {
         g_variant_unref(result);
     }
-
-    read_loop.join();
-    read_loop = std::thread();
 }
 
 void repowerd::Sensorfw::set_interval(int interval) {

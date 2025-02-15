@@ -62,6 +62,7 @@ private:
     void request_sensor();
     bool release_sensor();
     bool load_plugin();
+    void run_socket_reader();
 
     const char* plugin_string() const;
     const char* plugin_interface() const;
