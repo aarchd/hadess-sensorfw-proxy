@@ -1,4 +1,3 @@
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 cmake_minimum_required(VERSION 3.0)
@@ -10,10 +9,9 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(GIO_UNIX REQUIRED gio-unix-2.0)
-pkg_check_modules(GUDEV REQUIRED gudev-1.0)
-
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Network REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(GLIB_UTIL REQUIRED libglibutil)
+pkg_check_modules(GBINDER REQUIRED libgbinder>=1.1.20)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -pthread")
@@ -31,7 +29,9 @@ add_executable(
 target_link_libraries(hadess-sensorfw-proxy PUBLIC
     ${GIO_LDFLAGS} ${GIO_LIBRARIES}
     ${GIO_UNIX_LDFLAGS} ${GIO_UNIX_LIBRARIES}
-    ${GUDEV_LDFLAGS} ${GUDEV_LIBRARIES}
+    ${GLIB_LDFLAGS} ${GLIB_LIBRARIES}
+    ${GLIB_UTIL_LDFLAGS} ${GLIB_UTIL_LIBRARIES}
+    ${GBINDER_LDFLAGS} ${GBINDER_LIBRARIES}
 
     sensorfw-core
 )
@@ -39,7 +39,9 @@ target_link_libraries(hadess-sensorfw-proxy PUBLIC
 target_include_directories(hadess-sensorfw-proxy PUBLIC
     ${GIO_INCLUDE_DIRS}
     ${GIO_UNIX_INCLUDE_DIRS}
-    ${GUDEV_INCLUDE_DIRS}
+    ${GLIB_INCLUDE_DIRS}
+    ${GLIB_UTIL_INCLUDE_DIRS}
+    ${GBINDER_INCLUDE_DIRS}
 )
 
 install(TARGETS hadess-sensorfw-proxy RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
