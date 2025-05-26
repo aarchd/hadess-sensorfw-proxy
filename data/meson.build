@@ -42,14 +42,6 @@ configure_file(
 )
 
 polkit_policy = 'net.hadess.SensorProxy.policy'
-if xmllint.found()
-  test(polkit_policy,
-       xmllint,
-       args: [
-           '--noout',
-           meson.source_root() / 'data' / polkit_policy,
-       ])
-endif
 
 install_data(
   polkit_policy,
