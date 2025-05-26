@@ -19,5 +19,8 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libsensorfw-qt6-plugins,
          libsensorfw-qt6-hybris,
+Provides: iio-sensor-proxy
+Replaces: iio-sensor-proxy
+Breaks: iio-sensor-proxy
 Description: Sensorfw sensors to hadess iio proxy adaptor
  Sensorfw sensors to hadess iio proxy adaptor
