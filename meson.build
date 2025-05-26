@@ -8,6 +8,7 @@ gbinder = dependency('libgbinder', version: '>=1.1.20', required: true)
 
 add_project_arguments('-pthread', language: ['c', 'cpp'])
 
+subdir('data')
 subdir('sensorfw-core')
 
 executable(
