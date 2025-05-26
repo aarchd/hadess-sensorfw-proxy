@@ -7,6 +7,8 @@ Build-Depends: cmake,
                libglib2.0-dev,
                pkg-config,
                systemd,
+               libudev-dev,
+               libpolkit-gobject-1-dev,
 Maintainer: Erfan Abdi <erfangplus@gmail.com>
 Standards-Version: 3.9.5
 Homepage: https://github.com/droidian/hadess-sensorfw-proxy
