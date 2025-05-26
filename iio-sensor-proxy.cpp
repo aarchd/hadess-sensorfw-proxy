@@ -661,6 +661,9 @@ name_acquired_handler (GDBusConnection *connection,
 
 	for (i = 0; i < NUM_SENSOR_TYPES; i++) {
 		data->clients[i] = create_clients_hash_table ();
+		if (data->clients[i] == NULL) {
+			goto bail;
+		}
 	}
 
 	send_sensor_availability (data);
