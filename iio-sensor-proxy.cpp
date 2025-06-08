@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2014-2020 Bastien Nocera <hadess@hadess.net>
  *                         Erfan Abdi <erfangplus@gmail.com>
+ * Copyright (c) 2025 Deepak Meena <notwho53@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3 as published by
